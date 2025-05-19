@@ -26,6 +26,8 @@ router.get(
   PropertyController.getAllProperty
 );
 
+// router.get("/", auth(UserRole.Provider), PropertyController.getNearbyProducts);
+
 router.put("/:id", auth(UserRole.Customer), PropertyController.updateProperty)
 router.delete("/:id", auth(UserRole.Customer), PropertyController.deleteProperty)
 

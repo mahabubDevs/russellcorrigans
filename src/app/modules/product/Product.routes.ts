@@ -21,12 +21,12 @@ router.post(
 );
 
 
-router.get("/:id", auth(UserRole.Customer), ProductController.getAllPrices);
+router.get("/:id", auth(UserRole.Customer), ProductController.getProductWithProperty);
 router.delete("/:id", auth(UserRole.Customer), ProductController.deleteProduct);
-router.put("/:id", auth(UserRole.Customer), ProductController.updateProduct);
+// router.put("/:id", auth(UserRole.Customer), ProductController.updateProduct);
 
 
-// router.get("/", auth(UserRole.Provider), ProductController.getNearbyProducts);
+router.get("/", auth(), ProductController.getNearbyProducts);
 router.post(
   "/accept-product/:id",
   auth(UserRole.Provider),

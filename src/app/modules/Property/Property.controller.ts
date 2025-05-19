@@ -44,6 +44,33 @@ const getAllProperty = async (req: Request, res: Response) => {
   }
 }
 
+
+// Provider: Get nearby products
+//  const getNearbyProducts = async (req: Request, res: Response) => {
+//   const { lat, lng } = req.query;
+//   console.log("lat", lat)
+//   console.log("lng", lng)
+//   console.log("body", req.query)
+
+//   const all = await prisma.property.findMany({
+//     where: { status: ProductStatus.PENDING },
+//   });
+
+//   const filtered = all.filter((p) =>
+//     haversine(
+//       { lat: Number(lat), lng: Number(lng) },
+//       { lat: p.lat, lng: p.lng },
+//       5000 // 5 km radius
+//     )
+//   );
+
+//   res.json(filtered);
+// };
+
+
+
+
+
 const deleteProperty = async (req: Request, res: Response) => {
   try {
     const result = await PropertyService.deleteProperty(req.params.id);
@@ -67,6 +94,26 @@ const updateProperty = async (req:Request, res:Response) => {
     });
   }
 }
+
+
+export const PropertyController = {
+  createProperty,
+  getAllProperty,
+  deleteProperty,
+  updateProperty,
+  // getNearbyProducts
+  // getAllPrices,
+  // deleteProduct,
+  // updateProduct,
+  // getNearbyProducts,
+  // acceptProduct,
+  // rejectProduct,
+  // completeProduct,
+  // getMyProducts,
+  // getPendingProducts,
+  // updateProjectImage
+
+};
 
 
 // const updateProduct = async (req: Request, res: Response) => {
@@ -273,23 +320,6 @@ const updateProperty = async (req:Request, res:Response) => {
 
 
 
-export const PropertyController = {
-  createProperty,
-  getAllProperty,
-  deleteProperty,
-  updateProperty
-  // getAllPrices,
-  // deleteProduct,
-  // updateProduct,
-  // getNearbyProducts,
-  // acceptProduct,
-  // rejectProduct,
-  // completeProduct,
-  // getMyProducts,
-  // getPendingProducts,
-  // updateProjectImage
-
-};
 
 
 // const createProduct = catchAsync (async (req:Request, res:Response) => {

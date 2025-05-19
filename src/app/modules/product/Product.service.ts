@@ -99,33 +99,18 @@ const createProduct = async (data: CreateProductRequest, imageUrls: string[],pro
   return {
     product,
     vat
-    // address: data.address,
-    // location: data.location,
-    // basePrice,
-    // additionsPrice,
-    // totalPrice,
+   
   };
 };
 
-const getAll = async (userId: string) => {
-  const prices = await prisma.createProduct.findMany({
-    where: { userId },
-  });
-  return prices.map((price) => ({
-    id: price.id,
-  
- 
-    driveways: price.driveways,
-    isCornerLot: price.isCornerLot,
-    extraFeet: price.extraFeet,
-    isSteep: price.isSteep,
-    isPriority: price.isPriority,
+// const getAll = async (userId: string) => {
+//   const prices = await prisma.createProduct.findMany({
+//     where: { userId }
+//   });
+//   return prices;
+// };
 
-    additionsPrice: price.additionsPrice,
-    totalPrice: price.totalPrice,
-    images: price.images || [],
-  }));
-};
+
 
 
 const getPriceById = async (id: string) => {
@@ -154,22 +139,23 @@ const deleteProduct = async (id: string) => {
 }
 
 
-const updateProduct = async ( data: CreateProductRequest, id: string,) => {
-  const product = await prisma.createProduct.findUnique({
-    where: { id },
-  });
-    if (!product) {
-        throw new ApiError(httpStatus.NOT_FOUND, "Product not found.");
-    }
-    const updatedProduct = await prisma.createProduct.update({
-        where: { id },
-        data: {
-            ...data,
-            images: data.images || product.images, // Keep existing images if not provided
-        },
-    });
-    return updatedProduct;
-}
+// const updateProduct = async ( data: CreateProductRequest, id: string,) => {
+//   const product = await prisma.createProduct.findUnique({
+//     where: { id },
+//   });
+//     if (!product) {
+//         throw new ApiError(httpStatus.NOT_FOUND, "Product not found.");
+//     }
+//     const updatedProduct = await prisma.createProduct.update({
+//         where: { id },
+//         data: {
+//             ...data,
+//             images: data.images || product.images, // Keep existing images if not provided
+//             //  propertyDetails: data.propertyDetails || product.propertyDetails,
+//         },
+//     });
+//     return updatedProduct;
+// }
 
 const updateProjectImage = async (providerId: string, imageUrls: string[], productId:string) => {
   const user = await prisma.user.findUnique({ where: { id: providerId } });
@@ -194,10 +180,11 @@ const updateProjectImage = async (providerId: string, imageUrls: string[], produ
 export const ProductService = {
   createProduct,
   getPriceById,
-  getAll,
+  // getAll,
   deleteProduct,
-  updateProduct,
-  updateProjectImage
+  // updateProduct,
+  updateProjectImage,
+  // getProductWithProperty
 };
 
 

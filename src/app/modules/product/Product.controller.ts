@@ -59,16 +59,41 @@ const createProduct = async (req: Request, res: Response) => {
 };
 
 
-const getAllPrices = async (req: Request, res: Response) => {
+// const getAllPrices = async (req: Request, res: Response) => {
+//   try {
+//     const result = await ProductService.getAll(req.params.id);
+//     res.status(200).json(result);
+//   } catch (error: any) {
+//     res.status(error.statusCode || 500).json({
+//       message: error.message || "Something went wrong",
+//     });
+//   }
+// }
+
+
+const getProductWithProperty = async (req: Request, res: Response) => {
   try {
-    const result = await ProductService.getAll(req.params.id);
-    res.status(200).json(result);
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
-      message: error.message || "Something went wrong",
+    const { id } = req.params;
+console.log("productId", id)
+    // CreateProduct এবং সম্পর্কিত Property ডেটা নিয়ে আসা
+    const product = await prisma.createProduct.findUnique({
+      where: { id: id },
+      include: {
+        propertyDetails: true, // Property সম্পর্কিত ডেটা অন্তর্ভুক্ত করুন
+      },
     });
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    // প্রাপ্ত ডেটা রেসপন্সে পাঠানো
+    res.json({ message: 'Product fetched successfully', result: product });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
   }
-}
+};
 
 const deleteProduct = async (req: Request, res: Response) => {
   try {
@@ -81,64 +106,95 @@ const deleteProduct = async (req: Request, res: Response) => {
   } 
 }
 
-const updateProduct = async (req: Request, res: Response) => {
-  try {
-    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-    console.log("updateProduct", req.body);
-    const body = JSON.parse(req.body.data); // Parse the JSON string from "data"
-    // const body = req.body; // Assuming the data is already in JSON format
-    console.log("updateProduct body", body);
+// const updateProduct = async (req: Request, res: Response) => {
+//   try {
+//     const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+//     console.log("updateProduct", req.body);
+//     const body = JSON.parse(req.body.data); // Parse the JSON string from "data"
+//     // const body = req.body; // Assuming the data is already in JSON format
+//     console.log("updateProduct body", body);
   
-    let imageUrls: string[] = [];
+//     let imageUrls: string[] = [];
   
-    if (files?.images && files.images.length > 0) {
-      const uploads = await Promise.all(
-        files.images.map(async (file) => {
-          // Upload to Cloudinary (or switch to uploadToDigitalOcean if needed)
-          const uploaded = await fileUploader.uploadToCloudinary(file);
-          return uploaded.Location;
-        })
-      );
-      imageUrls = uploads;
-    }
+//     if (files?.images && files.images.length > 0) {
+//       const uploads = await Promise.all(
+//         files.images.map(async (file) => {
+//           // Upload to Cloudinary (or switch to uploadToDigitalOcean if needed)
+//           const uploaded = await fileUploader.uploadToCloudinary(file);
+//           return uploaded.Location;
+//         })
+//       );
+//       imageUrls = uploads;
+//     }
   
-    // Combine user data with image URLs
-    const userPayload = {
-      ...body,
-      images: imageUrls,
-    };
+//     // Combine user data with image URLs
+//     const userPayload = {
+//       ...body,
+//       images: imageUrls,
+//     };
   
-    const result = await ProductService.updateProduct(userPayload, req.params.id);
+//     const result = await ProductService.updateProduct(userPayload, req.params.id);
   
-    res.status(200).json(result);
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
-      message: error.message || "Something went wrong",
-    });
-  }
-}
+//     res.status(200).json(result);
+//   } catch (error: any) {
+//     res.status(error.statusCode || 500).json({
+//       message: error.message || "Something went wrong",
+//     });
+//   }
+// }
 
 // Provider: Get nearby products
-//  const getNearbyProducts = async (req: Request, res: Response) => {
-//   const { lat, lng } = req.query;
-//   console.log("lat", lat)
-//   console.log("lng", lng)
-//   console.log("body", req.query)
+const getNearbyProducts = async (req: Request, res: Response) => {
+  const { lat, lng } = req.query;
+  console.log("getNearbyProducts", req.query);
 
-//   const all = await prisma.createProduct.findMany({
-//     where: { status: ProductStatus.PENDING },
-//   });
+  // Ensure lat and lng are provided in the query
+  if (!lat || !lng) {
+    return res.status(400).json({ message: 'Latitude and longitude are required' });
+  }
 
-//   const filtered = all.filter((p) =>
-//     haversine(
-//       { lat: Number(lat), lng: Number(lng) },
-//       { lat: p.lat, lng: p.lng },
-//       5000 // 5 km radius
-//     )
-//   );
+  try {
+    // Fetch products with their related Property data
+    const products = await prisma.createProduct.findMany({
+      where: {
+        status: ProductStatus.PENDING,
+      },
+      include: {
+        propertyDetails: true, // Include the related Property data
+      },
+    });
 
-//   res.json(filtered);
-// };
+    // Ensure the latitude and longitude are numbers
+    const userLocation = { lat: Number(lat), lng: Number(lng) };
+
+    // Filter products based on their proximity to the user
+    const productsWithDistance = products.map((product) => {
+      if (!product.propertyDetails) return null;
+
+      const { lat: propertyLat, lng: propertyLng } = product.propertyDetails;
+
+      // Ensure lat and lng are valid numbers
+      if (typeof propertyLat !== 'number' || typeof propertyLng !== 'number') return null;
+
+      // Calculate the distance from the user's location to the product's property
+      const distance = haversine(userLocation, { lat: propertyLat, lng: propertyLng });
+
+      // Return the product with the calculated distance
+      return {
+        ...product,
+        distance,
+      };
+    }).filter(Boolean); // Remove any null values
+
+    // Sort products by distance (ascending order)
+    const sortedProducts = productsWithDistance.sort((a:any, b:any) => a.distance - b.distance);
+
+    res.json(sortedProducts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
 
 // Provider: Accept product
  const acceptProduct = async (req: Request, res: Response) => {
@@ -287,10 +343,11 @@ const getPendingProducts = async (req: Request, res: Response) => {
 
 export const ProductController = {
   createProduct,
-  getAllPrices,
+  // getAllPrices,
+  getProductWithProperty,
   deleteProduct,
-  updateProduct,
-  // getNearbyProducts,
+  // updateProduct,
+  getNearbyProducts,
   acceptProduct,
   rejectProduct,
   completeProduct,

@@ -65,6 +65,8 @@ model Property {
   user            User     @relation(fields: [userId], references: [id])
   products        CreateProduct[]
   
+
+
   @@map("Property")
 
 }
@@ -98,8 +100,8 @@ model CreateProduct {
   user            User     @relation(fields: [userId], references: [id])
 
 
-  propertyId     String     @db.ObjectId
-  propertyDetails  Property  @relation(fields: [propertyId], references: [id])
+  propertyId     String?     @db.ObjectId
+  propertyDetails  Property?  @relation(fields: [propertyId], references: [id])
    
   review          Review?
 

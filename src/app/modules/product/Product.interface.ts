@@ -1,4 +1,4 @@
-import { ProductStatus } from "@prisma/client";
+import { ProductStatus, Property } from "@prisma/client";
 
 export interface CreateProductRequest {
   id: string;
@@ -16,7 +16,7 @@ export interface CreateProductRequest {
   isPriority?: boolean;
   userId: string; // Add userId here
   images?: string[]; // Add images here
-  
+   propertyDetails?: Property;
  
 
   basePrice: number;
