@@ -62,6 +62,7 @@ const createProperty = async (data: CreatePropertyInterface ) => {
 const getAllProperty = async (userId: string) => {
   const property = await prisma.property.findMany({
     where: { userId },
+    orderBy: { createdAt: "desc" },
   });
   return property.map((property) => ({
     id: property.id,

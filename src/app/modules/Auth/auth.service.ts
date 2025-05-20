@@ -9,29 +9,66 @@ import { UserRole, UserStatus } from "@prisma/client";
 import httpStatus from "http-status";
 import crypto from 'crypto';
 // user login
-const loginUser = async (payload: { email: string; password: string ; role: string; fcmToken?: string }) => {
+// const loginUser = async (payload: { email: string; password: string ; role: string; fcmToken?: string }) => {
+//   const userData = await prisma.user.findFirst({
+//     where: {
+//       email: payload.email,
+//       role: payload.role as UserRole,
+      
+//     },
+//   });
+  
+//   if (!userData) {
+//   throw new ApiError(
+//     httpStatus.NOT_FOUND,
+//     `User not found with email ${payload.email} and role ${payload.role}`
+//   );
+// }
+
+
+//   if (!userData?.email) {
+//     throw new ApiError(
+//       httpStatus.NOT_FOUND,
+//       "User not found! with this email " + payload.email
+//     );
+//   }
+//   const isCorrectPassword: boolean = await bcrypt.compare(
+//     payload.password,
+//     userData.password
+//   );
+
+//   if (!isCorrectPassword) {
+//     throw new ApiError(httpStatus.BAD_REQUEST, "Password incorrect!");
+//   }
+//   const accessToken = jwtHelpers.generateToken(
+//     {
+//       id: userData.id,
+//       email: userData.email,
+//       role: userData.role,
+//     },
+//     config.jwt.jwt_secret as Secret,
+//     config.jwt.expires_in as string
+//   );
+
+//   return { token: accessToken , role: userData.role };
+// };
+
+
+const loginUser = async (payload: { email: string; password: string; role: string; fcmToken?: string }) => {
   const userData = await prisma.user.findFirst({
     where: {
       email: payload.email,
       role: payload.role as UserRole,
-      
     },
   });
-  
+
   if (!userData) {
-  throw new ApiError(
-    httpStatus.NOT_FOUND,
-    `User not found with email ${payload.email} and role ${payload.role}`
-  );
-}
-
-
-  if (!userData?.email) {
     throw new ApiError(
       httpStatus.NOT_FOUND,
-      "User not found! with this email " + payload.email
+      `User not found with email ${payload.email} and role ${payload.role}`
     );
   }
+
   const isCorrectPassword: boolean = await bcrypt.compare(
     payload.password,
     userData.password
@@ -40,6 +77,15 @@ const loginUser = async (payload: { email: string; password: string ; role: stri
   if (!isCorrectPassword) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Password incorrect!");
   }
+
+  // ✅ FCM token save logic
+  if (payload.fcmToken) {
+    await prisma.user.update({
+      where: { id: userData.id },
+      data: { fcmToken: payload.fcmToken },
+    });
+  }
+
   const accessToken = jwtHelpers.generateToken(
     {
       id: userData.id,
@@ -50,8 +96,9 @@ const loginUser = async (payload: { email: string; password: string ; role: stri
     config.jwt.expires_in as string
   );
 
-  return { token: accessToken , role: userData.role };
+  return { token: accessToken, role: userData.role };
 };
+
 
 // get user profile
 const getMyProfile = async (userToken: string) => {

@@ -26,7 +26,7 @@ router.delete("/:id", auth(UserRole.Customer), ProductController.deleteProduct);
 // router.put("/:id", auth(UserRole.Customer), ProductController.updateProduct);
 
 
-router.get("/", auth(), ProductController.getNearbyProducts);
+router.get("/", auth(UserRole.Provider), ProductController.getNearbyProducts);
 router.post(
   "/accept-product/:id",
   auth(UserRole.Provider),
