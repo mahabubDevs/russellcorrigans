@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import {  PropertyService} from "./Property.service";
 import { fileUploader } from "../../../helpars/fileUploader";
-import  haversine  from "../../../shared/haversine";
+import  {haversine}  from "../../../shared/haversine";
 import prisma from "../../../shared/prisma";
 import { ProductStatus } from "@prisma/client";
 import ApiError from "../../../errors/ApiErrors";

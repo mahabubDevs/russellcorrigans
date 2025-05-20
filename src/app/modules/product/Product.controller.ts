@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { ProductService} from "./Product.service";
 import { fileUploader } from "../../../helpars/fileUploader";
-import  haversine  from "../../../shared/haversine";
+import  {haversine}  from "../../../shared/haversine";
 import prisma from "../../../shared/prisma";
 import { ProductStatus } from "@prisma/client";
 import ApiError from "../../../errors/ApiErrors";
@@ -144,49 +144,97 @@ const deleteProduct = async (req: Request, res: Response) => {
 // }
 
 // Provider: Get nearby products
+// const getNearbyProducts = async (req: Request, res: Response) => {
+//   const { lat, lng } = req.query;
+//   console.log("getNearbyProducts", req.query);
+
+//   // Ensure lat and lng are provided in the query
+//   if (!lat || !lng) {
+//     return res.status(400).json({ message: 'Latitude and longitude are required' });
+//   }
+
+//   try {
+//     // Fetch products with their related Property data
+//     const products = await prisma.createProduct.findMany({
+//       where: {
+//         status: ProductStatus.PENDING,
+//       },
+//       include: {
+//         propertyDetails: true, // Include the related Property data
+//       },
+//     });
+
+//     // Ensure the latitude and longitude are numbers
+//     const userLocation = { lat: Number(lat), lng: Number(lng) };
+
+//     // Filter products based on their proximity to the user
+//     const productsWithDistance = products.map((product) => {
+//       if (!product.propertyDetails) return null;
+
+//       const { lat: propertyLat, lng: propertyLng } = product.propertyDetails;
+
+//       // Ensure lat and lng are valid numbers
+//       if (typeof propertyLat !== 'number' || typeof propertyLng !== 'number') return null;
+
+//       // Calculate the distance from the user's location to the product's property
+//       const distance = haversine(userLocation, { lat: propertyLat, lng: propertyLng });
+
+//       // Return the product with the calculated distance
+//       return {
+//         ...product,
+//         distance,
+//       };
+//     }).filter(Boolean); // Remove any null values
+
+//     // Sort products by distance (ascending order)
+//     const sortedProducts = productsWithDistance.sort((a:any, b:any) => a.distance - b.distance);
+
+//     res.json(sortedProducts);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: 'Internal server error' });
+//   }
+// };
+
+
+
+
+
 const getNearbyProducts = async (req: Request, res: Response) => {
   const { lat, lng } = req.query;
-  console.log("getNearbyProducts", req.query);
 
-  // Ensure lat and lng are provided in the query
   if (!lat || !lng) {
     return res.status(400).json({ message: 'Latitude and longitude are required' });
   }
 
   try {
-    // Fetch products with their related Property data
+    const providerLocation = { lat: Number(lat), lng: Number(lng) };
+
     const products = await prisma.createProduct.findMany({
       where: {
         status: ProductStatus.PENDING,
       },
       include: {
-        propertyDetails: true, // Include the related Property data
+        propertyDetails: true,
       },
     });
 
-    // Ensure the latitude and longitude are numbers
-    const userLocation = { lat: Number(lat), lng: Number(lng) };
-
-    // Filter products based on their proximity to the user
+    // Map products with distance
     const productsWithDistance = products.map((product) => {
-      if (!product.propertyDetails) return null;
+      const property = product.propertyDetails;
 
-      const { lat: propertyLat, lng: propertyLng } = product.propertyDetails;
+      if (!property || typeof property.lat !== 'number' || typeof property.lng !== 'number') return null;
 
-      // Ensure lat and lng are valid numbers
-      if (typeof propertyLat !== 'number' || typeof propertyLng !== 'number') return null;
+      const productLocation = { lat: property.lat, lng: property.lng };
+      const distance = haversine(providerLocation, productLocation);
 
-      // Calculate the distance from the user's location to the product's property
-      const distance = haversine(userLocation, { lat: propertyLat, lng: propertyLng });
-
-      // Return the product with the calculated distance
       return {
         ...product,
         distance,
       };
-    }).filter(Boolean); // Remove any null values
+    }).filter(Boolean); // remove nulls
 
-    // Sort products by distance (ascending order)
+    // Sort all by distance (low to high)
     const sortedProducts = productsWithDistance.sort((a:any, b:any) => a.distance - b.distance);
 
     res.json(sortedProducts);
@@ -195,6 +243,7 @@ const getNearbyProducts = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
 
 // Provider: Accept product
  const acceptProduct = async (req: Request, res: Response) => {
@@ -338,7 +387,59 @@ const getPendingProducts = async (req: Request, res: Response) => {
   }
 };
 
+const getAcceptProduct = async (req: Request, res: Response) => {
+  const providerId = req.user.id;
 
+  try {
+    
+
+    const products = await prisma.createProduct.findMany({
+      where: {
+        status: 'ACCEPTED',
+        providerId: providerId,
+      },
+    });
+
+    return res.json(products);
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+const getAcceptProductDetaisl = async (req: Request, res: Response) => {
+  const productId = req.params.id;
+
+  try {
+    
+    const product = await prisma.createProduct.findUnique({
+      where: {
+        id: productId,
+      },
+
+    });
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    const provider = await prisma.user.findUnique({
+      where: {
+        id: product?.providerId!,
+      },  
+    })
+
+    const customer = await prisma.user.findUnique({
+      where: {
+        id: product?.userId,
+      },  
+    })
+    res.json({product, provider, customer});
+
+
+    return res.json(product);
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+}
 
 
 export const ProductController = {
@@ -353,7 +454,9 @@ export const ProductController = {
   completeProduct,
   getMyProducts,
   getPendingProducts,
-  updateProjectImage
+  updateProjectImage,
+  getAcceptProduct,
+  getAcceptProductDetaisl
 
 };
 
