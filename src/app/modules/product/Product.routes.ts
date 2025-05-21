@@ -43,12 +43,12 @@ router.post(
 
 router.get("/:id", auth(UserRole.Customer), ProductController.getProductWithProperty);
 router.get(
-  "/my-products/:id",
+  "/my-products/",
   auth(UserRole.Customer),
   ProductController.getMyProducts
 );
 router.get("/", auth(UserRole.Provider), ProductController.getNearbyProducts);
-router.get("/", auth(UserRole.Provider), ProductController.getAcceptProduct);
+router.get("/accept-product/", auth(UserRole.Provider), ProductController.getAcceptProduct);
 router.get("/", auth(UserRole.Provider), ProductController.getAcceptProductDetaisl);
 
 
