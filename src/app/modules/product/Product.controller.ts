@@ -405,6 +405,9 @@ const getAcceptProduct = async (req: Request, res: Response) => {
         status: 'ACCEPTED',
         providerId: providerId,
       },
+      include: {
+      propertyDetails: true,
+    },
     });
 
     return res.json(products);

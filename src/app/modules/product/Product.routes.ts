@@ -46,10 +46,10 @@ router.get(
   auth(UserRole.Customer),
   ProductController.getMyProducts
 );
-router.get("/:id", auth(UserRole.Customer), ProductController.getProductWithProperty);
 router.get("/", auth(UserRole.Provider), ProductController.getNearbyProducts);
 router.get("/accept-product/", auth(UserRole.Provider), ProductController.getAcceptProduct);
 router.get("/", auth(UserRole.Provider), ProductController.getAcceptProductDetaisl);
+router.get("/:id", auth(UserRole.Customer), ProductController.getProductWithProperty);
 
 
 router.put ("/upload-image/:id", auth(UserRole.Provider),fileUploader.uploadMultipleImage, ProductController.updateProjectImage  )
