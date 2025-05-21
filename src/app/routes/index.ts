@@ -5,6 +5,7 @@ import {StripeRoutes} from "../modules/Payment/StripePayment.routes";
 import { ProductRoutes } from "../modules/product/Product.routes";
 import { PropertyRoutes } from "../modules/Property/Property.routes";
 import { NotificationRoutes } from "../modules/Notification/Notification.routes";
+import { ReviewRoutes } from "../modules/review/review.route";
 
 
 const router = express.Router();
@@ -33,6 +34,10 @@ const moduleRoutes = [
   {
     path: "/notifications",
     route: NotificationRoutes,
+  },
+  {
+    path: "/reviews",
+    route: ReviewRoutes,
   },
 
 ];
