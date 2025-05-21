@@ -34,8 +34,10 @@ const createProperty = async (req: Request, res: Response) => {
 
 
 const getAllProperty = async (req: Request, res: Response) => {
+  console.log("req.params.id", req.params.id);
   try {
     const result = await PropertyService.getAllProperty(req.params.id);
+    console.log("calculatePrice result", result);
     res.status(200).json(result);
   } catch (error: any) {
     res.status(error.statusCode || 500).json({

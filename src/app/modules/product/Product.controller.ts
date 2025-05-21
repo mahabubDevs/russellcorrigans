@@ -255,6 +255,7 @@ const getNearbyProducts = async (req: Request, res: Response) => {
     data: {
       providerId,
       status: ProductStatus.ACCEPTED,
+      scheduleDate: new Date(),
     },
   });
 
@@ -312,10 +313,16 @@ const updateProjectImage = catchAsync(async (req: Request, res: Response) => {
 // Customer: Get my created products
  const getMyProducts = async (req: Request, res: Response) => {
   const userId = req.user.id;
+  console.log("userId", userId);
 
   const myProducts = await prisma.createProduct.findMany({
     where: { userId },
+    include: {
+      propertyDetails: true,
+    },
   });
+  
+
 
   res.json(myProducts);
 };

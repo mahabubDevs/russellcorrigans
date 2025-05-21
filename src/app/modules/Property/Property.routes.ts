@@ -22,7 +22,7 @@ router.post(
 );
 
 router.get(
-  "/", auth(UserRole.Customer),
+  "/:id", auth(UserRole.Customer),
   PropertyController.getAllProperty
 );
 

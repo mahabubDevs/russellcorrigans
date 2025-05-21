@@ -100,7 +100,7 @@ console.log("result", result);
     },
   });
 
-  return { message: ' OTP sent to your email successfully' };
+  return { message: ' OTP sent to your email successfully',otp };
  
 
 };
