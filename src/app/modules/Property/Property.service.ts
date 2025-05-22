@@ -118,11 +118,7 @@ export const PropertyService = {
   getAllProperty,
   deleteProperty,
   updateProperty
-  // getPriceById,
-  // getAll,
-  // deleteProduct,
-  // updateProduct,
-  // updateProjectImage
+ 
 };
 
 

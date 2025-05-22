@@ -309,7 +309,4 @@ export const userService = {
   getUserProfile,
   deleteUserDocumentImage,
   verifyEmail
-  // getUsersFromDb,
-  // updateProfile,
-  // updateUserIntoDb,
 };

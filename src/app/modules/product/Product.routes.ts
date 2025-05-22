@@ -21,7 +21,7 @@ router.post(
 );
 
 
-// router.put("/:id", auth(UserRole.Customer), ProductController.updateProduct);
+
 
 
 router.post(
@@ -56,8 +56,7 @@ router.put ("/upload-image/:id", auth(UserRole.Provider),fileUploader.uploadMult
 router.delete("/:id", auth(UserRole.Customer), ProductController.deleteProduct);
 
 
-// router.post("/", fileUploader.uploadSingle, handleCreateProduct);
-// router.get("/get-product/:id", auth(UserRole.Customer), ProductController.getAllPrices);
+
 
 export const ProductRoutes = router;
 

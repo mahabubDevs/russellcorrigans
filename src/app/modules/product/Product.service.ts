@@ -103,12 +103,7 @@ const createProduct = async (data: CreateProductRequest, imageUrls: string[],pro
   };
 };
 
-// const getAll = async (userId: string) => {
-//   const prices = await prisma.createProduct.findMany({
-//     where: { userId }
-//   });
-//   return prices;
-// };
+
 
 
 
@@ -139,23 +134,7 @@ const deleteProduct = async (id: string) => {
 }
 
 
-// const updateProduct = async ( data: CreateProductRequest, id: string,) => {
-//   const product = await prisma.createProduct.findUnique({
-//     where: { id },
-//   });
-//     if (!product) {
-//         throw new ApiError(httpStatus.NOT_FOUND, "Product not found.");
-//     }
-//     const updatedProduct = await prisma.createProduct.update({
-//         where: { id },
-//         data: {
-//             ...data,
-//             images: data.images || product.images, // Keep existing images if not provided
-//             //  propertyDetails: data.propertyDetails || product.propertyDetails,
-//         },
-//     });
-//     return updatedProduct;
-// }
+
 
 const updateProjectImage = async (providerId: string, imageUrls: string[], productId:string) => {
   const user = await prisma.user.findUnique({ where: { id: providerId } });
@@ -180,11 +159,11 @@ const updateProjectImage = async (providerId: string, imageUrls: string[], produ
 export const ProductService = {
   createProduct,
   getPriceById,
-  // getAll,
+
   deleteProduct,
-  // updateProduct,
+
   updateProjectImage,
-  // getProductWithProperty
+
 };
 
 

@@ -13,15 +13,6 @@ import bcrypt from "bcrypt";
 import dayjs from "dayjs";
 import { IUser } from "./user.interface";
 
-// const createUser = catchAsync(async (req: Request, res: Response) => {
-//   const result = await userService.createUserIntoDb(req.body,req);
-//   sendResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     message: "User Registered successfully!",
-//     data: result,
-//   });
-// });
 
 
 
@@ -64,11 +55,7 @@ const createUser = catchAsync(async (req: Request, res: Response) => {
   
   });
 
-  // res.status(201).json({
-  //   success: true,
-  //   message: "User registered successfully!",
-  //   data: user,
-  // });
+  
 });
 
 const verifyEmail = catchAsync(async (req: Request, res: Response) => {
@@ -89,80 +76,12 @@ const verifyEmail = catchAsync(async (req: Request, res: Response) => {
 
 
 
-// const createUser = catchAsync(async (req: Request, res: Response) => {
-//   const stringData = req.body.data;
-//   const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-
-//   if (!stringData) throw new ApiError(400, "Missing user data in 'data' field");
-
-//   const body = JSON.parse(stringData); // Parse the JSON string from "data"
-//   let imageUrls: string[] = [];
-
-//   if (files?.images && files.images.length > 0) {
-//     const uploads = await Promise.all(
-//       files.images.map(async (file) => {
-//         const uploaded = await fileUploader.uploadToCloudinary(file);
-//         return uploaded.Location;
-//       })
-//     );
-//     imageUrls = uploads;
-//   }
-
-//   const userPayload = {
-//     ...body,
-//     images: imageUrls, // Attach uploaded image URLs
-//   };
-
-//   const user = await userService.createUserIntoDb(userPayload);
-
-//   res.status(201).json({
-//     success: true,
-//     message: "User registered successfully!",
-//     data: user,
-//   });
-// });
-
-
-
-
-
-// const updateProfile = catchAsync(async (req: Request, res: Response) => {
-//   console.log("updateProfile", req.body);
-//   const userId = req.params.id;
-//   const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-//   const body = req.body;
-//   console.log("updateProfile body", body);
-//   let imageUrls: string[] = [];
-//   if (files?.images && files.images.length > 0) {
-//     const uploads = await Promise.all(
-//       files.images.map(async (file) => {
-//         const uploaded = await fileUploader.uploadToCloudinary(file);
-//         return uploaded.Location;
-//       })
-//     );
-//     imageUrls = uploads;
-//   }
-//   const userPayload = {
-//     ...body,
-//     images: imageUrls, // Attach uploaded image URLs
-//   };
-//   const user = await userService.updateUserProfile(userId, userPayload,req);
-//   res.status(200).json({
-//     success: true,
-//     message: "User profile updated successfully!",
-//     data: user,
-//   });
-// });
-
-
 
  const updateProfile = catchAsync(async (req: Request, res: Response) => {
   console.log("updateProfile", req.body);  // For debugging incoming request data
 
-  // Get the userId from the request parameters (from the URL)
+
   const userId = req.params.id;
-  
-  // Get the updated user data from the request body
   const body = req.body;
 
   // Construct the user payload (without images) for the update
@@ -181,60 +100,6 @@ const verifyEmail = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-
-
-// const updateProfileImage = catchAsync(async (req: Request, res: Response) => {
-//   const userId = req.params.id;
-//   const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-//   const body = req.body;
-//   let imageUrls: string[] = [];
-//   if (files?.images && files.images.length > 0) {
-//     const uploads = await Promise.all(
-//       files.images.map(async (file) => {
-//         const uploaded = await fileUploader.uploadToCloudinary(file);
-//         return uploaded.Location;
-//       })
-//     );
-//     imageUrls = uploads;
-//   }
-//   const userPayload = {
-//     ...body,
-//     images: imageUrls, // Attach uploaded image URLs
-//   };
-//   const user = await userService.updateProfileImage(userId, userPayload,req);
-//   res.status(200).json({
-//     success: true,
-//     message: "User profile updated successfully!",
-//     data: user,
-//   });
-// });
-
-
-
-
-
-
-
-
-
-
-
-
-
-// get all user form db
-// const getUsers = catchAsync(async (req: Request, res: Response) => {
-
-//   const filters = pick(req.query, userFilterableFields);
-//   const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder'])
-
-//   const result = await userService.getUsersFromDb(filters, options);
-//   sendResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     message: "Users retrieve successfully!",
-//     data: result,
-//   });
-// });
 
 
 const updateProfileImage = catchAsync(async (req: Request, res: Response) => {
