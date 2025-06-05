@@ -24,14 +24,14 @@ const calculateAdditionsPrice = (data: any): number => {
   // Driveways
   if (data.driveways && data.driveways.length > 0) {
     data.driveways.forEach((type:any) => {
-      if (type === "1-car") additions += 45;
-      if (type === "2-car") additions += 65;
-      if (type === "3-car") additions += 85;
+      if (type === "2-car") additions += 0;
+      if (type === "3-car") additions += 5;
+      if (type === "4-car") additions += 10;
     });
   }
 
 
-  if (data.isCornerLot) additions += 15;
+  if (data.isCornerLot) additions += 10;
 
 
   if (data.extraFeet && data.extraFeet > 0) {
@@ -50,13 +50,14 @@ const calculateAdditionsPrice = (data: any): number => {
 
 const createProduct = async (data: CreateProductRequest, imageUrls: string[],property:Property ) => {
   console.log("Calculating price for data:", data);
-
+  
+ // Ensure price is set, default to 0 if not provided
   // Ensure we have userId for tracking purposes
   if (!data.userId) {
     throw new ApiError(httpStatus.BAD_REQUEST, "User ID is required.");
   }
 
-  const basePrice = property.basePrice;
+  const basePrice = data.price ;
   const vat = basePrice * 0.1
 
   if (basePrice === 0) {
@@ -82,7 +83,7 @@ const createProduct = async (data: CreateProductRequest, imageUrls: string[],pro
     extraFeet: data.extraFeet || 0,
     isSteep: data.isSteep || false,
     isPriority: data.isPriority || false,
-
+    price: basePrice || 0,
     additionsPrice: additionsPrice || 0,
     totalPrice: totalPrice || 0,
     userId: data.userId,

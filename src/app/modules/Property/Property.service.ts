@@ -7,16 +7,16 @@ import { CreatePropertyInterface } from "./Property.interface";
 // import { ProductStatus } from "@prisma/client";
 
 
-const getBasePrice = (area: number): number => {
-  if (area <= 3000) return 45 + 45 * 0.10;       // $45 + 10%
-  if (area <= 5000) return 65 + 65 * 0.10;       // $65 + 10%
-  if (area <= 8000) return 85 + 85 * 0.10;       // $85 + 10%
-  if (area <= 12000) return 100 + 100 * 0.10;    // $100 + 10%
+// const getBasePrice = (area: number): number => {
+//   if (area <= 3000) return 45 + 45 * 0.10;       // $45 + 10%
+//   if (area <= 5000) return 65 + 65 * 0.10;       // $65 + 10%
+//   if (area <= 8000) return 85 + 85 * 0.10;       // $85 + 10%
+//   if (area <= 12000) return 100 + 100 * 0.10;    // $100 + 10%
 
-  // If area is larger, calculate per square foot
-  const base = area * 0.01;                      // Assume $0.01 per sq ft
-  return base + base * 0.10;                     // + 10% extra
-};
+//   // If area is larger, calculate per square foot
+//   const base = area * 0.01;                      // Assume $0.01 per sq ft
+//   return base + base * 0.10;                     // + 10% extra
+// };
 
 
 const createProperty = async (data: CreatePropertyInterface ) => {
@@ -27,11 +27,11 @@ const createProperty = async (data: CreatePropertyInterface ) => {
     throw new ApiError(httpStatus.BAD_REQUEST, "User ID is required.");
   }
 
-  const basePrice = getBasePrice(data.area);
+  // const basePrice = getBasePrice(data.area);
 
-  if (basePrice === 0) {
-    throw new ApiError(httpStatus.BAD_REQUEST, "Custom quote area. Please contact support.");
-  }
+  // if (basePrice === 0) {
+  //   throw new ApiError(httpStatus.BAD_REQUEST, "Custom quote area. Please contact support.");
+  // }
 
   
   
@@ -47,7 +47,7 @@ const createProperty = async (data: CreatePropertyInterface ) => {
     lat: isNaN(Number(data.lat)) ? 0 : Number(data.lat),  
     lng: isNaN(Number(data.lng)) ? 0 : Number(data.lng),  
    
-    basePrice: basePrice || 0,
+    // basePrice: basePrice || 0,
    
     userId: data.userId,
   
@@ -73,7 +73,7 @@ const getAllProperty = async (userId: string) => {
     perimeter: property.perimeter,
     area: property.area,
   
-    basePrice: property.basePrice,
+    // basePrice: property.basePrice,
     
   }));
 };

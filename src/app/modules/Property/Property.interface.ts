@@ -15,7 +15,7 @@ export interface CreatePropertyInterface {
   
  
 
-  basePrice: number;
+  // basePrice: number;
   createdAt?: Date;
 }
 
@@ -23,7 +23,7 @@ export interface CreatePropertyInterface {
 export interface PropertyResponse {
   address: string;
   location: string;
-  basePrice: number;
+  // basePrice: number;
 }
 
 

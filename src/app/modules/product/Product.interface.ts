@@ -19,7 +19,7 @@ export interface CreateProductRequest {
    propertyDetails?: Property;
  
 
-  basePrice: number;
+  price: number;
   additionsPrice: number;
   totalPrice: number;
 
@@ -33,7 +33,7 @@ export interface CreateProductRequest {
 export interface ProductResponse {
   address: string;
   location: string;
-  basePrice: number;
+  price: number;
   additionsPrice: number;
   totalPrice: number;
 }

@@ -29,16 +29,7 @@ router.post(
   auth(UserRole.Provider),
   ProductController.acceptProduct
 );
-router.post(
-  "/reject-product/:id",
-  auth(UserRole.Provider),
-  ProductController.rejectProduct
-);
-router.post(
-  "/complete-product/:id",
-  auth(UserRole.Provider),
-  ProductController.completeProduct
-);
+
 
 
 router.get(
@@ -50,6 +41,18 @@ router.get("/", auth(UserRole.Provider), ProductController.getNearbyProducts);
 router.get("/accept-product/", auth(UserRole.Provider), ProductController.getAcceptProduct);
 router.get("/", auth(UserRole.Provider), ProductController.getAcceptProductDetaisl);
 router.get("/:id", auth(UserRole.Customer), ProductController.getProductWithProperty);
+
+
+router.post(
+  "/reject-product/:id",
+  auth(UserRole.Provider),
+  ProductController.rejectProduct
+);
+router.post(
+  "/complete-product/:id",
+  auth(UserRole.Provider),
+  ProductController.completeProduct
+);
 
 
 router.put ("/upload-image/:id", auth(UserRole.Provider),fileUploader.uploadMultipleImage, ProductController.updateProjectImage  )
